@@ -82,7 +82,7 @@
 		"vitest": "^0.18.1"
 	},
 	"peerDependencies": {
-		"@11ty/eleventy": "^1.0.0 || ^2.0.0"
+		"@11ty/eleventy": "^1.0.0 || ^2.0.0 || ^2.0.0-canary.14"
 	},
 	"engines": {
 		"node": ">=14.15.0"
