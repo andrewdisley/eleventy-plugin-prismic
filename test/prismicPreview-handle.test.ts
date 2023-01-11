@@ -1,7 +1,7 @@
-import { it, expect, beforeAll, afterAll } from "vitest";
+import { it, expect, beforeAll, afterAll, vi } from "vitest";
 import * as mswNode from "msw/node";
 
-import { cookie } from "@prismicio/client";
+import * as prismic from "@prismicio/client";
 
 import { createMockQueryHandler } from "./__testutils__/createMockQueryHandler";
 import { createMockRepositoryHandler } from "./__testutils__/createMockRepositoryHandler";
@@ -57,7 +57,7 @@ it("resolves preview when query strings are valid", async () => {
 		headers: {
 			"X-Robots-Tag": "noindex, nofollow",
 			location: "/preview/foo?preview=true",
-			"set-cookie": `${cookie.preview}=${encodeURIComponent(
+			"set-cookie": `${prismic.cookie.preview}=${encodeURIComponent(
 				JSON.stringify({
 					[`${options.endpoint}.prismic.io`]: { preview: "foo" },
 				}),
@@ -100,14 +100,20 @@ it("returns fallback page when previewed page is not found", async () => {
 });
 
 it("catches and handle thrown errors", async () => {
+	vi.stubGlobal("console", { ...console, error: vi.fn() });
+
 	// 11ty unknown route pattern
 	expect(
 		(await prismicPreview.handle("/preview/foo/bar", {}, headers, options))
 			.statusCode,
 	).toBe(404);
+	expect(console.error).toHaveBeenNthCalledWith(1, expect.any(Error));
 
 	// 11ty 500
 	expect(
 		(await prismicPreview.handle("", {}, headers, options)).statusCode,
 	).toBe(500);
+	expect(console.error).toHaveBeenNthCalledWith(2, expect.any(Error));
+
+	vi.restoreAllMocks();
 });

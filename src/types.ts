@@ -1,9 +1,4 @@
-import { Client, ClientConfig } from "@prismicio/client";
-import {
-	HTMLFunctionSerializer,
-	HTMLMapSerializer,
-	LinkResolverFunction,
-} from "@prismicio/helpers";
+import * as prismic from "@prismicio/client";
 
 // Eleventy types
 
@@ -61,14 +56,14 @@ export type PrismicPluginOptionsBase = {
 	 *
 	 * @see Link resolver documentation {@link https://prismic.io/docs/core-concepts/link-resolver-route-resolver#link-resolver}
 	 */
-	linkResolver?: LinkResolverFunction;
+	linkResolver?: prismic.LinkResolverFunction;
 
 	/**
 	 * An optional HTML serializer to customize the way rich text fields are rendered
 	 *
 	 * @see HTML serializer documentation {@link https://prismic.io/docs/core-concepts/html-serializer}
 	 */
-	htmlSerializer?: HTMLFunctionSerializer | HTMLMapSerializer;
+	htmlSerializer?: prismic.HTMLFunctionSerializer | prismic.HTMLMapSerializer;
 
 	/**
 	 * Whether or not to inject shortcodes
@@ -140,6 +135,12 @@ export type PrismicPluginOptionsWithClientOrEndpointBase =
 		singletons?: string[];
 
 		/**
+		 * An optional list of documents types to fetch. Not providing this list (`undefined`)
+		 * will result in all documents being fetched.
+		 */
+		documentTypes?: string[];
+
+		/**
 		 * @experimental
 		 *
 		 * Indicates to the 11ty plugin that the site is a multi-language site, when used, the plugin will nest documents under their language code (`prismic.settings.data` becomes `prismic.settings["en-us"].data`)
@@ -167,7 +168,7 @@ export type PrismicPluginOptionsWithClient =
 		 *
 		 * @see Prismic client documentation {@link https://prismic.io/docs/technologies/javascript}
 		 */
-		client: Client;
+		client: prismic.Client;
 	};
 
 export type PrismicPluginOptionsWithEndpoint =
@@ -228,7 +229,7 @@ export type PrismicPluginOptionsWithEndpoint =
 		 * }
 		 * ```
 		 */
-		clientConfig?: ClientConfig;
+		clientConfig?: prismic.ClientConfig;
 	};
 
 /**
